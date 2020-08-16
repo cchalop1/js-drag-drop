@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: red;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            width: 150px;
+            height: 150px;
+            background-color: black;
+            color: white;
+            margin: 10px;
+            font-size: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">1</div>
+    <div class="box">2</div>
+    <div class="box">3</div>
+    <div class="box">4</div>
+    <div class="box">5</div>
+</body>
+<script>
+    let allBox = [].slice.call(document.getElementsByClassName('box'));
+
+    const pxToNumber = (str) => Number(str.split("p")[0]);
+
+    allBox.forEach((box, idx) => {
+        box.style.order = `${idx}`;
+        box.addEventListener("click", () => {
+            if (box.style.color !== "red") {
+                box.style.color = "red";
+                box.style.position = "absolute";
+                document.body.onmousemove = (e) => {
+                    box.style.left = `${e.clientX - 100}px`;
+                    box.style.top = `${e.clientY - 100}px`;
+                };
+            } else {
+                box.style.color = "white";
+                box.onmousemove = null;
+                box.style.position = null;
+                box.style.order = (() => {
+                    allBox.forEach(b => {
+                        if (pxToNumber(box.style.left) + 100 > b.offsetLeft)
+                            box.style.order = `${Number(b.style.order) + 1}`;
+                    })
+                })();
+            }
+        });
+    });
+    console.log(allBox);
+</script>
+
+</html>
